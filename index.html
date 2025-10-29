@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tone.js CDN (for music) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Heart rain animation */
+        .heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none; /* Allows clicking through */
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            color: red;
+            opacity: 0;
+            animation: fall 10s linear infinite;
+            top: -10vh; /* Start above screen */
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Animation for the text forming */
+        @keyframes pop-in {
+            0% {
+                opacity: 0;
+                transform: scale(1.5) translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Photo gallery animation */
+        .gallery-photo {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.6s ease-out;
+            border: 4px solid white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .gallery-photo.animate {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Simple scroll-down arrow */
+        .scroll-down {
+            position: relative;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* NEW: Flip Card for "Reasons I Love You" */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            border-radius: 1rem; /* 16px */
+        }
+
+        .flip-card:hover .flip-card-inner,
+        .flip-card:focus .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 1rem; /* 16px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem; /* p-6 */
+        }
+
+        .flip-card-front {
+            background-color: white;
+            color: #db2777; /* text-rose-600 */
+            border: 2px solid #fecdd3; /* border-pink-200 */
+        }
+
+        .flip-card-back {
+            background-color: #db2777; /* bg-rose-600 */
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-pink-50 text-rose-800 antialiased">
+
+    <!-- Heart rain container -->
+    <div id="heart-container" class="heart-container"></div>
+
+    <!-- Hidden Birthday Text -->
+    <div id="birthday-text-container" class="fixed inset-0 flex items-center justify-center text-center z-[10000] pointer-events-none opacity-0 transition-opacity duration-1000">
+        <h1 class="text-6xl md:text-8xl font-bold text-white" style="text-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 10px rgba(255, 0, 0, 0.8);">
+            <!-- Spans for animation will be injected here -->
+        </h1>
+    </div>
+
+    <!-- Main content wrapper -->
+    <div class="relative z-10">
+
+        <!-- 1. Hero Section -->
+        <section class="min-h-screen w-full flex flex-col items-center justify-center p-6 bg-gradient-to-b from-white to-pink-100">
+            <div class="text-center space-y-6 max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-bold text-rose-600">Happy Birthday, My Dearest Love KHUSHI !</h1>
+                <p class="text-xl md:text-2xl text-rose-700">You are my sun, my moon, and all my stars. Today is all about you.</p>
+                
+                <!-- Info Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10">
+                    <!-- About Her -->
+                    <div class="info-card bg-white p-6 rounded-2xl shadow-lg border border-pink-200 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-rose-500 mb-3">About You</h2>
+                        <p class="text-left text-rose-700">
+                          You are the girl who makes my world brighter with every smile. You’re not just my love, you’re my peace, my happiness, and my favorite reason to believe in forever. I’m so grateful for every moment with you — today, I just want to remind you how deeply I love you. 💞.
+                            <br><br>
+                            
+                        </p>
+                    </div>
+
+                    <!-- Our Story -->
+                    <div class="info-card bg-white p-6 rounded-2xl shadow-lg border border-pink-200 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-rose-500 mb-3">Our Story</h2>
+                        <p class="text-left text-rose-700">
+                            I'll never forget the day we met at CB garden. From that moment, I knew you were special. My favorite memory is when we kiss first time.
+                            <br><br>
+                            <em></em>
+                        </p>
+                    </div>
+
+                     <!-- Quotes -->
+                    <div class="info-card bg-white p-6 rounded-2xl shadow-lg border border-pink-200 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-rose-500 mb-3">A Little Quote</h2>
+                        <p class="text-left text-rose-700 italic">
+                            "Whatever our souls are made of, her and mine are the same." - Emily Brontë
+                            <br><br>
+                            <em>"You’re not just the love of my life, you’re the light that makes every day worth living."</em>
+                        </p>
+                    </div>
+
+                    <!-- Wishes -->
+                    <div class="info-card bg-white p-6 rounded-2xl shadow-lg border border-pink-200 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-rose-500 mb-3">My Wishes For You</h2>
+                        <p class="text-left text-rose-700">
+                             For your birthday, I wish you endless joy, unconditional love, and all the success in the world. May this year be your best one yet. I love you more than words can say.
+                             <br><br>
+                             <em>Happiest Birthday My love</em>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Surprise Button 1 -->
+                <button id="surprise-btn-1" class="mt-10 px-8 py-4 bg-rose-500 text-white text-lg font-bold rounded-full shadow-lg hover:bg-rose-600 transition-all duration-300 transform hover:scale-105">
+                    Click for surprise! ❤️
+                </button>
+            </div>
+            
+            <!-- Scroll Down Arrow -->
+            <div class="scroll-down absolute bottom-10 text-rose-400 text-4xl">
+                &#x2193; <!-- Downward Arrow -->
+            </div>
+        </section>
+
+        <!-- 2. Gallery Section -->
+        <section class="min-h-screen w-full flex flex-col items-center justify-center p-6 bg-pink-100">
+            <div class="text-center space-y-6 max-w-5xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-rose-600">Down Our Memory Lane...</h2>
+                <p class="text-lg text-rose-700">Just a handful of times you made my world better.</p>
+
+                <!-- NEW: Featured Memories -->
+                <div class="space-y-12 pt-10">
+                    <!-- Memory 1 -->
+                    <!-- 
+                        PHOTO UPLOAD INSTRUCTIONS:
+                        1. Get your photo URL (you can upload to a free site like imgbb.com or use a shared Google Photos link - make sure it's public!).
+                        2. Replace the 'https://placehold.co...' link below with your photo's URL.
+                        3. Do this for all `<img>` tags in this file.
+                    -->
+                    <div class="md:flex items-center gap-6 bg-white p-6 rounded-2xl shadow-lg">
+                        <img src="photos/photo19.jpeg" alt="Featured Memory 1" class="w-full md:w-1/2 rounded-lg shadow-md mb-4 md:mb-0">
+                        <div class="md:w-1/2 text-left">
+                            <h3 class="text-2xl font-bold text-rose-500 mb-2">OUR FIRST KISSS</h3>
+                            <p class="text-rose-700">I'll never forget how much fun we had at there. Getting deeper in love with you .</p>
+                        </div>
+                    </div>
+                    <!-- Memory 2 -->
+                    <div class="md:flex flex-row-reverse items-center gap-6 bg-white p-6 rounded-2xl shadow-lg">
+                        <img src="photos/photo4.jpg" alt="Featured Memory 2" class="w-full md:w-1/2 rounded-lg shadow-md mb-4 md:mb-0">
+                        <div class="md:w-1/2 text-left md:text-right">
+                            <h3 class="text-2xl font-bold text-rose-500 mb-2">your selfies</h3>
+                            <p class="text-rose-700">your selfies make my day awesome. when i see your smilling face i cant control my feelings for you .</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Surprise Button 2 -->
+                <button id="surprise-btn-2" class="mt-12 px-8 py-4 bg-rose-500 text-white text-lg font-bold rounded-full shadow-lg hover:bg-rose-600 transition-all duration-300 transform hover:scale-105">
+                    Click to see more memories! 📸
+                </button>
+
+                <!-- Photo Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 pt-10">
+                    <img src="photos/firstone.jpg" alt="Our First Photo" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo16.JPG" alt="Vacation" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo1.JPG" alt="Silly Face" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo2.jpg" alt="Dinner" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo3.jpg" alt="Anniversary" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo4.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo5.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo6.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo7.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo8.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo9.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo10.JPG" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo11.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo12.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo13.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo14.jpeg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo15.JPG" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo17.jpeg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo18.jpeg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo19.jpeg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo20.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo21.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo22.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo23.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo24.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo25.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+                    <img src="photos/photo26.jpg" alt="Favorite" class="gallery-photo rounded-lg w-full h-auto object-cover aspect-square">
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. NEW: Reasons I Love You Section -->
+        <section class="min-h-[70vh] w-full flex flex-col items-center justify-center p-6 bg-gradient-to-b from-pink-100 to-white">
+            <div class="text-center space-y-10 max-w-5xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-rose-600">A Few Reasons Why I Love You</h2>
+                <p class="text-lg text-rose-700">...and why I'll never stop. card la touch kr beta </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div class="flip-card" tabindex="0">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3 class="text-2xl font-bold">Your Smile</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <p class="text-lg">tujhi smile pagal karun takte mala.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="flip-card" tabindex="0">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3 class="text-2xl font-bold">तुझा येडा पणा</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <p class="text-lg">लहान मुलगी सारख वागणं येडे चाले करणे.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="flip-card" tabindex="0">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3 class="text-2xl font-bold">Your Laugh</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <p class="text-lg">Tujh hasn khup aavdt mala nehmi asch rah.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Card 4 -->
+                     <div class="flip-card" tabindex="0">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h3 class="text-2xl font-bold">The Way You...</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <p class="text-lg">you understand me khushi that makes me more loving to u</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 4. Final Section -->
+        <section class="min-h-[40vh] w-full flex flex-col items-center justify-center p-6 bg-white">
+            <div class="text-center space-y-8 max-w-3xl mx-auto">
+                <div class="pt-10">
+                    <h3 class="text-3xl font-bold text-rose-600">Want even more surprises?</h3>
+                    <p class="text-xl text-rose-700 mt-2">
+                        Just look at me... and know that I'm all yours. ❤️
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center p-10 bg-white">
+            <p class="text-rose-600">Made with all my love, just for you. Happy Birthday.</p>
+            <p class="text-rose-400 text-sm mt-1">From, Your Love Rahul</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Music Player (Tone.js) ---
+        // Create a reverb effect for a "dreamy" sound
+        const reverb = new Tone.Reverb(2.5).toDestination(); // 2.5 second decay
+        
+        // Initialize a simple synth and connect it to the reverb
+        const synth = new Tone.Synth({
+            oscillator: { type: 'fatsawtooth' },
+            envelope: {
+                attack: 0.2,
+                decay: 0.2,
+                sustain: 0.5,
+                release: 0.8,
+            }
+        }).connect(reverb);
+
+        // A simple romantic melody
+        const melody = new Tone.Sequence((time, note) => {
+            synth.triggerAttackRelease(note, '8n', time);
+        }, ['C4', ['E4', 'G4'], 'A4', 'G4', 'E4', 'C4', 'G3', 'C4'], '4n'); // Repeating pattern
+
+        Tone.Transport.bpm.value = 80; // Set a slow, romantic tempo
+        let isPlaying = false;
+
+
+        // --- Surprise 1: Heart Rain & Text Formation ---
+        const surpriseBtn1 = document.getElementById('surprise-btn-1');
+        const heartContainer = document.getElementById('heart-container');
+        const textContainer = document.getElementById('birthday-text-container');
+        const birthdayText = textContainer.querySelector('h1');
+        
+        let isRaining = false;
+        let rainInterval;
+
+        surpriseBtn1.addEventListener('click', async () => {
+            if (isRaining) return; // Don't start multiple intervals
+            isRaining = true;
+            surpriseBtn1.textContent = "It's raining love! ❤️";
+            surpriseBtn1.disabled = true;
+
+            // --- START MUSIC ---
+            // This is the best place to start music, as it's a user gesture
+            if (!isPlaying) {
+                await Tone.start();
+                Tone.Transport.start();
+                melody.start(0);
+                isPlaying = true;
+            }
+            // --- END MUSIC ---
+
+            // Start the rain
+            rainInterval = setInterval(createHeart, 200); 
+
+            // 1. Prepare the text
+            const text = "HAPPY BIRTHDAY MY LOVE!";
+            birthdayText.innerHTML = text.split('').map((char, i) => {
+                if (char === ' ') {
+                    return ' '; // Keep spaces as-is
+                }
+                // Stagger the animation for each letter
+                return `<span class="inline-block opacity-0" style="animation: pop-in 0.5s ease-out forwards; animation-delay: ${i * 0.1}s;">${char}</span>`;
+            }).join('');
+
+            // 2. Wait 2 seconds, then show text container
+            setTimeout(() => {
+                textContainer.style.opacity = '1';
+            }, 2000); // Wait 2s for rain to establish
+
+            // 3. Calculate when text animation finishes
+            // (text.length * delay_per_letter) + animation_duration
+            const textAnimationDuration = (text.length * 0.1 + 0.5) * 1000;
+            
+            // 4. Wait for text to finish forming, THEN stop the rain
+            setTimeout(() => {
+                clearInterval(rainInterval);
+                
+                // Optional: Fade out the text after it has been shown for a few seconds
+                setTimeout(() => {
+                    textContainer.style.opacity = '0';
+                }, 4000); // Show text for 4s, then fade it out
+
+            }, 2000 + textAnimationDuration); // Start this timer when text *starts*
+        });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = `${Math.random() * 100}vw`; // Random horizontal start
+            heart.style.animationDuration = `${Math.random() * 5 + 5}s`; // Random duration between 5-10s
+            heart.style.opacity = Math.random() * 0.5 + 0.5; // Random opacity
+            heart.style.fontSize = `${Math.random() * 1.5 + 1}rem`; // Random size
+            heart.innerHTML = '❤️';
+
+            heartContainer.appendChild(heart);
+
+            // Remove heart after animation finishes
+            heart.addEventListener('animationend', () => {
+                heart.remove();
+            });
+        }
+
+        // --- Surprise 2: Photo Animation ---
+        const surpriseBtn2 = document.getElementById('surprise-btn-2');
+        const galleryPhotos = document.querySelectorAll('.gallery-photo');
+
+        surpriseBtn2.addEventListener('click', () => {
+            surpriseBtn2.textContent = "Look at us! 😍";
+            surpriseBtn2.disabled = true;
+
+            galleryPhotos.forEach((photo, index) => {
+                // Animate photos one by one with a delay
+                setTimeout(() => {
+                    photo.classList.add('animate');
+                }, index * 200); // 200ms delay between each photo
+            });
+        });
+
+        // --- Remove old music button listener ---
+        // const musicBtn = document.getElementById('music-btn'); // Button is removed
+        // (All music logic is now in surpriseBtn1)
+
+    </script>
+</body>
+</html>
+
